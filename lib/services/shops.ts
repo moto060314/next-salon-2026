@@ -9,3 +9,11 @@ export async function getShops(): Promise<Shop[]> {
   const data: { shops: Shop[] } = await res.json();
   return data.shops;
 }
+
+export async function getShop(id: string): Promise<Shop | null> {
+  const res = await fetch(`${BASE_URL}/api/shops/${id}`, { cache: 'no-store' });
+  if (res.status === 404) return null;
+
+  const data: { shop: Shop } = await res.json();
+  return data.shop;
+}
