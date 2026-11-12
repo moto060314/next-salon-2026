@@ -10,6 +10,7 @@ export default function ShopCard({ shop }: { shop: Shop }) {
           src={shop.coverImage}
           alt={shop.name}
           fill
+          loading='eager'
           className='object-cover transition duration-500 group-hover:scale-105'
           sizes='(max-width: 768px) 100vw, 33vw'
         />
