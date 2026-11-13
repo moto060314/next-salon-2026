@@ -44,3 +44,4 @@ next-env.d.ts
 # documents を追加
 documents/pdf/*
 documents/unzip/*
+documents/teacher-data/*
