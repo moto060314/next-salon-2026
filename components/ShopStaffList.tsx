@@ -18,6 +18,7 @@ export default function ShopStaffList({ staff }: { staff: Staff[] }) {
               src={member.imageUrl}
               alt={member.name}
               fill
+              sizes='64px'
               className='object-cover'
             />
           </div>

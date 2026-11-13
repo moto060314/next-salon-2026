@@ -11,6 +11,7 @@ export default function ShopHero({ shop }: { shop: Shop }) {
             src={shop.coverImage}
             alt={shop.name}
             fill
+            loading='eager'
             className='object-cover'
             sizes='(max-width: 1024px) 100vw, 60vw'
           />
