@@ -1,9 +1,14 @@
 'use client';
 
+import BookingNavigation from '@/components/booking/BookingNavigation';
+import BookingSummary from '@/components/booking/BookingSummary';
+import ConfirmStep from '@/components/booking/ConfirmStep';
+import DateTimeStep from '@/components/booking/DateTimeStep';
+import MenuStep from '@/components/booking/MenuStep';
+import StaffStep from '@/components/booking/StaffStep';
 import {
   BookingProvider,
   canGoNext,
-  TOTAL_STEPS,
   useBooking,
 } from '@/contexts/BookingContext';
 import type { Menu } from '@/types/menu';
@@ -14,53 +19,91 @@ type BookingFormProps = {
   shop: Shop;
   menus: Menu[];
   staffs: Staff[];
+  candidateDates: string[];
+  timeSlots: string[];
 };
 
-export default function BookingForm({ shop }: BookingFormProps) {
+export default function BookingForm({
+  shop,
+  menus,
+  staffs,
+  candidateDates,
+  timeSlots,
+}: BookingFormProps) {
   return (
     <BookingProvider shopId={shop.id}>
-      <BookingFlow />
+      <BookingFlow
+        menus={menus}
+        staffs={staffs}
+        candidateDates={candidateDates}
+        timeSlots={timeSlots}
+      />
     </BookingProvider>
   );
 }
 
-function BookingFlow() {
+type BookingFlowProps = Omit<BookingFormProps, 'shop'>;
+
+function BookingFlow({
+  menus,
+  staffs,
+  candidateDates,
+  timeSlots,
+}: BookingFlowProps) {
   const { state, dispatch } = useBooking();
 
-  return (
-    <div>
-      {state.step === 1 && <div>STEP 1: メニューを選ぶ</div>}
-      {state.step === 2 && <div>STEP 2: 日付・時間を選ぶ</div>}
-      {state.step === 3 && <div>STEP 3: スタッフを選ぶ（任意）</div>}
-      {state.step === 4 && <div>STEP 4: 確認して予約する</div>}
+  const selectedMenu = menus.find((menu) => menu.id === state.menuId);
+  const selectedStaff = staffs.find((staff) => staff.id === state.staffId);
 
-      <div className='my-4 flex justify-center gap-3'>
-        <button
-          type='button'
-          onClick={() => dispatch({ type: 'prev' })}
-          disabled={state.step === 1}
-          className='rounded-xl border border-slate-300 px-5 py-3 text-sm font-medium disabled:opacity-40'
-        >
-          戻る
-        </button>
-        {state.step < TOTAL_STEPS ? (
-          <button
-            type='button'
-            onClick={() => dispatch({ type: 'next' })}
-            disabled={!canGoNext(state)}
-            className='rounded-xl border border-slate-300 px-5 py-3 text-sm font-medium disabled:opacity-40'
-          >
-            次へ
-          </button>
-        ) : (
-          <button
-            type='button'
-            className='rounded-xl border border-slate-300 px-5 py-3 text-sm font-medium disabled:opacity-40'
-          >
-            この内容で予約する
-          </button>
+  return (
+    <div className='grid gap-8 md:grid-cols-[1fr_320px]'>
+      <div>
+        {state.step === 1 && (
+          <MenuStep
+            menus={menus}
+            selectedMenuId={state.menuId}
+            onSelect={(menuId) => dispatch({ type: 'select-menu', menuId })}
+          />
         )}
+        {state.step === 2 && (
+          <DateTimeStep
+            candidateDates={candidateDates}
+            timeSlots={timeSlots}
+            selectedDate={state.date}
+            selectedTime={state.time}
+            onSelectDate={(date) => dispatch({ type: 'select-date', date })}
+            onSelectTime={(time) => dispatch({ type: 'select-time', time })}
+          />
+        )}
+        {state.step === 3 && (
+          <StaffStep
+            staffs={staffs}
+            selectedStaffId={state.staffId}
+            onSelect={(staffId) => dispatch({ type: 'select-staff', staffId })}
+          />
+        )}
+        {state.step === 4 && (
+          <ConfirmStep
+            notes={state.notes}
+            onChangeNotes={(notes) => dispatch({ type: 'change-notes', notes })}
+          />
+        )}
+
+        <BookingNavigation
+          step={state.step}
+          canGoNext={canGoNext(state)}
+          onPrev={() => dispatch({ type: 'prev' })}
+          onNext={() => dispatch({ type: 'next' })}
+        />
       </div>
+
+      <BookingSummary
+        selectedMenu={selectedMenu}
+        selectedStaff={selectedStaff}
+        staffId={state.staffId}
+        date={state.date}
+        time={state.time}
+      />
     </div>
   );
 }

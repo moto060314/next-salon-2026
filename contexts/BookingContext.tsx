@@ -32,7 +32,14 @@ const INITIAL_STATE: BookingState = {
 };
 
 export function canGoNext(state: BookingState): boolean {
-  return state.step <= TOTAL_STEPS;
+  switch (state.step) {
+    case 1:
+      return state.menuId !== null;
+    case 2:
+      return state.date !== null && state.time !== null;
+    default:
+      return true;
+  }
 }
 
 function bookingReducer(
