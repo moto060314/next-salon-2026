@@ -3,6 +3,8 @@ import ShopCard from '@/components/ShopCard';
 import { getShops } from '@/lib/services/shops';
 
 export default async function Home() {
+  // console.log('projectId:', process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID);
+
   const shops = await getShops();
 
   return (
