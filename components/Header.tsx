@@ -1,6 +1,10 @@
+'use client';
+
 import Link from 'next/link';
+import { useAuth } from '@/contexts/AuthContext';
 
 export default function Header() {
+  const { user, loading, signOut } = useAuth();
   const linkClass = 'text-sm rounded-full px-4 py-2 hover:bg-slate-500/10';
 
   return (
@@ -24,6 +28,18 @@ export default function Header() {
             管理者
           </Link>
         </nav>
+
+        <div className='ml-auto flex items-center gap-2'>
+          {loading ? null : user ? (
+            <button type='button' onClick={signOut} className={linkClass}>
+              ログアウト
+            </button>
+          ) : (
+            <Link href='/login' className={linkClass}>
+              ログイン
+            </Link>
+          )}
+        </div>
       </div>
     </header>
   );

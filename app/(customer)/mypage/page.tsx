@@ -1,3 +1,4 @@
+import AccountInfo from '@/components/user/AccountInfo';
 import SectionHeading from '@/components/SectionHeading';
 
 export default function Page() {
@@ -10,6 +11,7 @@ export default function Page() {
       />
 
       <div className='mt-8 grid gap-4 sm:grid-cols-2'>
+        <AccountInfo />
         <section className='rounded-lg border border-slate-200 bg-white p-6'>
           <h3 className='text-lg font-semibold text-slate-950'>次回の予約</h3>
           <p className='mt-3 text-sm leading-6 text-slate-600'>

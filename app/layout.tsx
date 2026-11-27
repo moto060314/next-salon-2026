@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import './globals.css';
 import Header from '@/components/Header';
+import FirebaseAuthProvider from '@/providers/FirebaseAuthProvider';
 
 export const metadata: Metadata = {
   title: 'Next Salon',
@@ -15,8 +16,10 @@ export default function RootLayout({
   return (
     <html lang='ja'>
       <body>
-        <Header />
-        <main className='mx-auto max-w-7xl px-8 py-4'>{children}</main>
+        <FirebaseAuthProvider>
+          <Header />
+          <main className='mx-auto max-w-7xl px-8 py-4'>{children}</main>
+        </FirebaseAuthProvider>
       </body>
     </html>
   );
